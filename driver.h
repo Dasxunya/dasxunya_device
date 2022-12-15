@@ -5,13 +5,12 @@
 #define MODULE_NAME "dasxunya_device"
 
 // Paths
-#define PROCFS_DIR_NAME "OS2"
-#define PROCFS_PCI_DEV_NAME "procfs_pci_dev"
-#define PROCFS_PPP_CHANNEL_NAME "procfs_ppp_channel"
+#define PROCFS_DIR_NAME "OS2lab"
+#define PROCFS_FILE_NAME "out"
 
 //
 #define GENERAL_ERROR_MESSAGE "E: Check kernel module or see more in dmesg"
-#define BUFFER_LENGTH 1024
+#define BUFF 4096
 
 struct ppp_channel_struct {
     int mtu; /* max transmit packet size */

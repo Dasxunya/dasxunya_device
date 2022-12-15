@@ -56,10 +56,10 @@ int main(int argc, char **argv) {
                     break;
             }
         }
-        char buffer[BUFFER_LENGTH];
+        char buffer[BUFF];
         fprintf(file, "Vendor:%s, Device:%s\n", vId, dId);
         while (true) {
-            char *msg = fgets(buffer, BUFFER_LENGTH, file);
+            char *msg = fgets(buffer, BUFF, file);
             if (msg == NULL) {
                 if (feof(file)) break;
                 fprintf(stderr, "Pci_dev struct reading failed with errno code: %d\n", errno);
