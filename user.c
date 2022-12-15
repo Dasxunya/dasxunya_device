@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
             {NULL,  0, NULL, 0}
     };
 
-    FILE *file = fopen("/proc/OS2lab/out", "r");
+    FILE *file = fopen("/proc/OS2lab/out", "w");
     if (file == NULL) {
         printf("Не можу открыть файл\n");
         return -1;
@@ -86,5 +86,6 @@ int main(int argc, char **argv) {
         }
         printf("ПИД:%s\n", pId);
     }
+    fclose(file);
     return 0;
 }

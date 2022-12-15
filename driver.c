@@ -32,7 +32,7 @@ static int __init dasxunya_device_init(void)
         printk("Не удалось создать директорию");
         return -1;
     }
-    proc_file = proc_create(PROCFS_FILE_NAME, 0666, proc_dir, &fops);
+    proc_file = proc_create(PROCFS_FILE_NAME, 0777, proc_dir, &fops);
     if (proc_file == NULL)
     {
         proc_remove(proc_dir);
