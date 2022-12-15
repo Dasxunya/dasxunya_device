@@ -10,7 +10,7 @@
 
 //
 #define GENERAL_ERROR_MESSAGE "E: Check kernel module or see more in dmesg"
-#define BUFF 4096
+#define BUFF 512
 
 struct ppp_channel_struct {
     int mtu; /* max transmit packet size */
