@@ -1,0 +1,30 @@
+#ifndef DASXUNYA_DEVICE_DRIVER_H
+#define DASXUNYA_DEVICE_DRIVER_H
+
+// Info
+#define MODULE_NAME "dasxunya_device"
+
+// Paths
+#define PROCFS_DIR_NAME "OS2"
+#define PROCFS_PCI_DEV_NAME "procfs_pci_dev"
+#define PROCFS_PPP_CHANNEL_NAME "procfs_ppp_channel"
+
+//
+#define GENERAL_ERROR_MESSAGE "E: Check kernel module or see more in dmesg"
+#define BUFFER_LENGTH 1024
+
+struct ppp_channel_struct {
+    int mtu; /* max transmit packet size */
+    int hdrlen; /* amount of headroom channel needs */
+    int speed; /* transfer rate (bytes/second) */
+};
+
+struct pci_dev_struct {
+    unsigned int	devfn;		/* Encoded device & function index */
+    unsigned short	vendor;
+    unsigned short	device;
+    unsigned short	subsystem_vendor;
+    unsigned short	subsystem_device;
+    unsigned int	class;
+};
+#endif //DASXUNYA_DEVICE_DRIVER_H
