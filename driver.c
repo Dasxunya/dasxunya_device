@@ -5,12 +5,17 @@
 #include <linux/export.h>  // For file operation
 #include <linux/proc_fs.h>
 #include <linux/string.h>
+#include <linux/seq_file.h>
 
 #include "driver.h"
 
 // Add file or directory entries to the /proc file system
 static struct proc_dir_entry *proc_dir;
 static struct proc_dir_entry *proc_file;
+
+static int node_open(struct inode *inode, struct file *file) {
+    pr_info("Файл открыт\n");
+}
 
 static ssize_t node_write(struct file *file, const char __user *buffer, size_t length, loff_t *ptr_offset){
     char umsg[BUFF];
@@ -20,6 +25,8 @@ static ssize_t node_write(struct file *file, const char __user *buffer, size_t l
 
 static const struct file_operations fops = {
         .owner = THIS_MODULE,
+        .open = node_open,
+        .read = seq_read,
         .write  = node_write
 };
 
