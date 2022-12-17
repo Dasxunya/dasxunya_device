@@ -2,6 +2,7 @@
 #include <linux/module.h> // Required for creating a Loadable Kernel Module
 #include <linux/init.h>
 #include <linux/fs.h>
+#include <linux/pci.h>
 #include <linux/export.h>  // For file operation
 #include <linux/proc_fs.h>
 #include <linux/string.h>
@@ -16,6 +17,22 @@ static char kbuf[BUFF];
 static struct proc_dir_entry *proc_dir;
 static struct proc_dir_entry *proc_file;
 
+static void get_pci_dev (unsigned int vendor_id, unsigned int device_id){
+    struct proc_pci_dev gotten_pci_dev;
+    struct pci_dev *dev = pci_get_device(vendor_id, device_id, NULL);
+    if (dev == NULL) {
+        printk(KERN_INFO "Такого девайса не существует");
+        return -EFAULT;
+    }
+    gotten_pci_dev.devfn = dev->devfn;
+    gotten_pci_dev.vendor = dev->vendor;
+    gotten_pci_dev.device = dev->device;
+    gotten_pci_dev.subsystem_vendor = dev->subsystem_vendor;
+    gotten_pci_dev.subsystem_device = dev->subsystem_device;
+    gotten_pci_dev.class = dev->class;
+    //send to user this struct
+}
+
 static ssize_t node_read(struct file *file, char __user *buffer, size_t length, loff_t *ptr_offset){
     int vendorId, deviceId;
     if (BUFF < length) {
@@ -29,8 +46,16 @@ static ssize_t node_read(struct file *file, char __user *buffer, size_t length, 
     }
     printk(KERN_INFO "Получаю айди (\"vid did\") от юзера");
     copy_from_user(kbuf, buffer, length);
-    //нужно добавить проверку считывания
-    sscanf(kbuf, "%d %d", &vendorId, &deviceId);
+
+    if ((sscanf(kbuf, "%d %d", &vendorId, &deviceId)) == 2){
+        get_pci_dev(vendorId, deviceId);
+    } else {printk("ойей");}
+        /*else if () {
+
+    } else {
+
+    }*/
+
     *ptr_offset = strlen(kbuf);
     return *ptr_offset;
 }
@@ -72,5 +97,5 @@ module_exit(dasxunya_device_exit);
 
 // Module descriptions
 MODULE_LICENSE("GPL");
-MODULE_DESCRIPTION("Module featuring procfs: pci_dev, ppp_channel");
+MODULE_DESCRIPTION("Module featuring procfs: proc_pci_dev, ppp_channel");
 MODULE_VERSION("1.0");

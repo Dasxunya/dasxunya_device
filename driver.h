@@ -18,7 +18,7 @@ struct ppp_channel_struct {
     int speed; /* transfer rate (bytes/second) */
 };
 
-struct pci_dev_struct {
+struct proc_pci_dev {
     unsigned int	devfn;		/* Encoded device & function index */
     unsigned short	vendor;
     unsigned short	device;

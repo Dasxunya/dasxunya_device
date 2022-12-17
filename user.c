@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
     int rez;
     int opIdx;
     if (argc == 3) {
-        printf("Получение структуры pci_dev...\n");
+        printf("Получение структуры proc_pci_dev...\n");
         while ((rez = getopt_long(argc, argv, shortOptions, longOptions, &opIdx)) != -1) {
             switch (rez) {
                 case 'v': {
