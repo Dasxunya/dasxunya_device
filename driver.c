@@ -16,13 +16,13 @@ static char kbuf[BUFF];
 // Add file or directory entries to the /proc file system
 static struct proc_dir_entry *proc_dir;
 static struct proc_dir_entry *proc_file;
+static struct proc_pci_dev gotten_pci_dev;
 
-static void get_pci_dev (unsigned int vendor_id, unsigned int device_id){
-    struct proc_pci_dev gotten_pci_dev;
+static int get_pci_dev (unsigned int vendor_id, unsigned int device_id){
     struct pci_dev *dev = pci_get_device(vendor_id, device_id, NULL);
     if (dev == NULL) {
         printk(KERN_INFO "Такого девайса не существует");
-        return -EFAULT;
+        return -1;
     }
     gotten_pci_dev.devfn = dev->devfn;
     gotten_pci_dev.vendor = dev->vendor;
@@ -30,6 +30,7 @@ static void get_pci_dev (unsigned int vendor_id, unsigned int device_id){
     gotten_pci_dev.subsystem_vendor = dev->subsystem_vendor;
     gotten_pci_dev.subsystem_device = dev->subsystem_device;
     gotten_pci_dev.class = dev->class;
+    return 0;
     //send to user this struct
 }
 
@@ -48,7 +49,10 @@ static ssize_t node_read(struct file *file, char __user *buffer, size_t length, 
     copy_from_user(kbuf, buffer, length);
 
     if ((sscanf(kbuf, "%d %d", &vendorId, &deviceId)) == 2){
-        get_pci_dev(vendorId, deviceId);
+        if ((get_pci_dev(vendorId, deviceId)) == 0){
+            sprintf(kbuf, "\nEncoded device & function index: %u\nVendor: %u\nDevice: %u\nSubsystem vendor: %u\nSubsystem device: %u\nClass: %u", gotten_pci_dev.devfn, gotten_pci_dev.vendor, gotten_pci_dev.device, gotten_pci_dev.subsystem_vendor, gotten_pci_dev.subsystem_device, gotten_pci_dev.class);
+            copy_to_user(buffer, kbuf, sizeof(kbuf));
+        }   else {printk("Запись структуры в буфер пользователя не произошла");}
     } else {printk("ойей");}
         /*else if () {
 
