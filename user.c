@@ -59,10 +59,7 @@ int main(int argc, char **argv) {
         sprintf(buffer, "%s %s", vId, dId); //записали в буффер
         fread(&buffer, 1, sizeof(buffer), file);
         printf("Получаю информацию об айди вендора и девайса...\n");
-        fwrite(&buffer, 1, sizeof(buffer), file);
-        while(getline(&line, &len, file) != -1){
-            printf("%s", line);
-        }
+        printf(buffer);
         fclose(file);
     } else { //if argc == 2
         printf("Получение структуры ppp_channel...\n");
