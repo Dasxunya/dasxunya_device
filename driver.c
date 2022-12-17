@@ -48,7 +48,8 @@ static ssize_t node_read(struct file *file, char __user *buffer, size_t length, 
     printk(KERN_INFO "Получаю айди (\"vid did\") от юзера");
     copy_from_user(kbuf, buffer, length);
 
-    if ((sscanf(kbuf, "%d %d", &vendorId, &deviceId)) == 2){
+    if ((sscanf(kbuf, "%x %x", &vendorId, &deviceId)) == 2){
+
         if ((get_pci_dev(vendorId, deviceId)) == 0){
             sprintf(kbuf, "\nEncoded device & function index: %u\nVendor: %u\nDevice: %u\nSubsystem vendor: %u\nSubsystem device: %u\nClass: %u", gotten_pci_dev.devfn, gotten_pci_dev.vendor, gotten_pci_dev.device, gotten_pci_dev.subsystem_vendor, gotten_pci_dev.subsystem_device, gotten_pci_dev.class);
             copy_to_user(buffer, kbuf, sizeof(kbuf));
