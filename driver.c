@@ -16,11 +16,6 @@ static char kbuf[BUFF];
 static struct proc_dir_entry *proc_dir;
 static struct proc_dir_entry *proc_file;
 
-static int node_open(struct inode *inode, struct file *file) {
-    pr_info("Файл открыт\n");
-    return 0;
-}
-
 static ssize_t node_read(struct file *file, char __user *buffer, size_t length, loff_t *ptr_offset){
     int vendorId, deviceId;
     if (BUFF < length) {
@@ -42,7 +37,6 @@ static ssize_t node_read(struct file *file, char __user *buffer, size_t length, 
 
 static const struct file_operations fops = {
         .owner = THIS_MODULE,
-        .open = node_open,
         .read = node_read
 };
 
