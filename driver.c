@@ -2,7 +2,10 @@
 #include <linux/module.h> // Required for creating a Loadable Kernel Module
 #include <linux/init.h>
 #include <linux/fs.h>
+#include <linux/sched.h> //for task struct
 #include <linux/pci.h>
+#include <linux/sched/mm.h>
+#include <linux/pid.h>
 #include <linux/export.h>  // For file operation
 #include <linux/proc_fs.h>
 #include <linux/string.h>
@@ -17,6 +20,7 @@ static char kbuf[BUFF];
 static struct proc_dir_entry *proc_dir;
 static struct proc_dir_entry *proc_file;
 static struct proc_pci_dev gotten_pci_dev;
+static struct proc_vma_area gotten_vma_area;
 
 static int get_pci_dev (unsigned int vendor_id, unsigned int device_id){
     struct pci_dev *dev = pci_get_device(vendor_id, device_id, NULL);
@@ -31,11 +35,28 @@ static int get_pci_dev (unsigned int vendor_id, unsigned int device_id){
     gotten_pci_dev.subsystem_device = dev->subsystem_device;
     gotten_pci_dev.class = dev->class;
     return 0;
-    //send to user this struct
+}
+
+static int get_vma_area (pid_t pid){
+    struct task_struct *task = get_pid_task(find_get_pid(pid), PIDTYPE_PID);
+    if (task == NULL) {
+        printk(KERN_INFO "Не удалось получить task");
+        return -1;
+    }
+    struct mm_struct *mm = get_task_mm(task);
+    struct vm_area_struct *vma = mm->mmap;
+
+    gotten_vma_area.vm_start = vma->vm_start;
+    gotten_vma_area.vm_end = vma->vm_end;
+    gotten_vma_area.vm_flags = vma->vm_flags;
+    gotten_vma_area.vm_pgoff = vma->vm_pgoff;
+
+    return 0;
 }
 
 static ssize_t node_read(struct file *file, char __user *buffer, size_t length, loff_t *ptr_offset){
     int vendorId, deviceId;
+    unsigned int pid;
     if (BUFF < length) {
         printk(KERN_WARNING "Запись не помещается в буфер");
         sprintf(kbuf, GENERAL_ERROR_MESSAGE);
@@ -51,16 +72,17 @@ static ssize_t node_read(struct file *file, char __user *buffer, size_t length, 
     if ((sscanf(kbuf, "%x %x", &vendorId, &deviceId)) == 2){
         printk(KERN_INFO "Получаю айди (\"vid did\") от юзера");
         if ((get_pci_dev(vendorId, deviceId)) == 0){
-            sprintf(kbuf, "Encoded device & function index: %u\nVendor: %u\nDevice: %u\nSubsystem vendor: %u\nSubsystem device: %u\nClass: %u\n", gotten_pci_dev.devfn, gotten_pci_dev.vendor, gotten_pci_dev.device, gotten_pci_dev.subsystem_vendor, gotten_pci_dev.subsystem_device, gotten_pci_dev.class);
+            sprintf(kbuf, "\nEncoded device & function index: %u\nVendor: %u\nDevice: %u\nSubsystem vendor: %u\nSubsystem device: %u\nClass: %u\n", gotten_pci_dev.devfn, gotten_pci_dev.vendor, gotten_pci_dev.device, gotten_pci_dev.subsystem_vendor, gotten_pci_dev.subsystem_device, gotten_pci_dev.class);
             copy_to_user(buffer, kbuf, sizeof(kbuf));
         }   else {printk("Запись структуры в буфер пользователя не произошла");}
-    } else {printk("ойей");}
-        /*else if () {
-
+    } else if ((sscanf(kbuf, "%u", &pid)) == 1) {
+        if ((get_vma_area(pid)) == 0){
+            sprintf(kbuf, "\nStart address: %lu\nEnd address: %lu\nFlags: %lu\nOffset (within vm_file): %lu\n", gotten_vma_area.vm_start, gotten_vma_area.vm_end, gotten_vma_area.vm_flags, gotten_vma_area.vm_pgoff);
+            copy_to_user(buffer, kbuf, sizeof(kbuf));
+}   else {printk("Запись структуры в буфер пользователя не произошла");}
     } else {
-
-    }*/
-
+        printk("Не удалось получить данные для определения структуры");
+    }
     *ptr_offset = strlen(kbuf);
     return *ptr_offset;
 }

@@ -54,15 +54,13 @@ int main(int argc, char **argv) {
             }
         }
         char buffer[BUFF];
-        char *line;
-        size_t len = 0;
         sprintf(buffer, "%s %s", vId, dId); //записали в буффер
         fread(&buffer, 1, sizeof(buffer), file);
         printf("Получаю информацию об айди вендора и девайса...\n");
         printf(buffer);
         fclose(file);
     } else { //if argc == 2
-        printf("Получение структуры ppp_channel...\n");
+        printf("Получение структуры vm_area...\n");
         rez = getopt_long(argc, argv, shortOptions, longOptions, &opIdx);
         switch (rez) {
             case 'p': {
@@ -78,6 +76,12 @@ int main(int argc, char **argv) {
                 break;
         }
         printf("ПИД:%s\n", pId);
+        char buffer[BUFF];
+        sprintf(buffer, "%s", pId); //записали в буффер
+        fread(&buffer, 1, sizeof(buffer), file);
+        printf("Получаю информацию о пиде...\n");
+        printf(buffer);
+        fclose(file);
     }
     return 0;
 }

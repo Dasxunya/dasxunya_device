@@ -12,10 +12,11 @@
 #define GENERAL_ERROR_MESSAGE "E: Check kernel module or see more in dmesg"
 #define BUFF 4096
 
-struct ppp_channel_struct {
-    int mtu; /* max transmit packet size */
-    int hdrlen; /* amount of headroom channel needs */
-    int speed; /* transfer rate (bytes/second) */
+struct proc_vma_area {
+    unsigned long vm_start;		/* Our start address within vm_mm. */
+    unsigned long vm_end;		/* The first byte after our end address within vm_mm. */
+    unsigned long vm_flags;     /* Flags, see mm.h. */
+    unsigned long vm_pgoff;		/* Offset (within vm_file) in PAGE_SIZE units */
 };
 
 struct proc_pci_dev {
