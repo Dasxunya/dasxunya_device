@@ -72,12 +72,12 @@ static ssize_t node_read(struct file *file, char __user *buffer, size_t length, 
     if ((sscanf(kbuf, "%x %x", &vendorId, &deviceId)) == 2){
         printk(KERN_INFO "Получаю айди (\"vid did\") от юзера");
         if ((get_pci_dev(vendorId, deviceId)) == 0){
-            sprintf(kbuf, "\nEncoded device & function index: %u\nVendor: %u\nDevice: %u\nSubsystem vendor: %u\nSubsystem device: %u\nClass: %u\n", gotten_pci_dev.devfn, gotten_pci_dev.vendor, gotten_pci_dev.device, gotten_pci_dev.subsystem_vendor, gotten_pci_dev.subsystem_device, gotten_pci_dev.class);
+            sprintf(kbuf, "\nEncoded device & function index: %x\nVendor: %x\nDevice: %x\nSubsystem vendor: %x\nSubsystem device: %x\nClass: %x\n", gotten_pci_dev.devfn, gotten_pci_dev.vendor, gotten_pci_dev.device, gotten_pci_dev.subsystem_vendor, gotten_pci_dev.subsystem_device, gotten_pci_dev.class);
             copy_to_user(buffer, kbuf, sizeof(kbuf));
         }   else {printk("Запись структуры в буфер пользователя не произошла");}
     } else if ((sscanf(kbuf, "%u", &pid)) == 1) {
         if ((get_vma_area(pid)) == 0){
-            sprintf(kbuf, "\nStart address: %lu\nEnd address: %lu\nFlags: %lu\nOffset (within vm_file): %lu\n", gotten_vma_area.vm_start, gotten_vma_area.vm_end, gotten_vma_area.vm_flags, gotten_vma_area.vm_pgoff);
+            sprintf(kbuf, "\nStart address: %lx\nEnd address: %lx\nFlags: %lx\nOffset (within vm_file): %lx\n", gotten_vma_area.vm_start, gotten_vma_area.vm_end, gotten_vma_area.vm_flags, gotten_vma_area.vm_pgoff);
             copy_to_user(buffer, kbuf, sizeof(kbuf));
 }   else {printk("Запись структуры в буфер пользователя не произошла");}
     } else {
