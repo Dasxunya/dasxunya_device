@@ -75,7 +75,6 @@ int main(int argc, char **argv) {
                 printf("Опций не обнаружено\n");
                 break;
         }
-        printf("ПИД:%s\n", pId);
         char buffer[BUFF];
         sprintf(buffer, "%s", pId); //записали в буффер
         fread(&buffer, 1, sizeof(buffer), file);
