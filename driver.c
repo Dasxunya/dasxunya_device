@@ -39,12 +39,15 @@ static int get_pci_dev (unsigned int vendor_id, unsigned int device_id){
 
 static int get_vma_area (pid_t pid){
     struct task_struct *task = get_pid_task(find_get_pid(pid), PIDTYPE_PID);
+    struct mm_struct *mm;
+    struct vm_area_struct *vma;
+
     if (task == NULL) {
         printk(KERN_INFO "Не удалось получить task");
         return -1;
     }
-    struct mm_struct *mm = get_task_mm(task);
-    struct vm_area_struct *vma = mm->mmap;
+    mm = get_task_mm(task);
+    vma = mm->mmap;
 
     gotten_vma_area.vm_start = vma->vm_start;
     gotten_vma_area.vm_end = vma->vm_end;

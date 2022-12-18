@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
         sprintf(buffer, "%s %s", vId, dId); //записали в буффер
         fread(&buffer, 1, sizeof(buffer), file);
         printf("Получаю информацию об айди вендора и девайса...\n");
-        printf(buffer);
+        printf("%s", buffer);
         fclose(file);
     } else { //if argc == 2
         printf("Получение структуры vm_area...\n");
@@ -75,12 +75,11 @@ int main(int argc, char **argv) {
                 printf("Опций не обнаружено\n");
                 break;
         }
-        printf("ПИД:%s\n", pId);
         char buffer[BUFF];
         sprintf(buffer, "%s", pId); //записали в буффер
         fread(&buffer, 1, sizeof(buffer), file);
         printf("Получаю информацию о пиде...\n");
-        printf(buffer);
+        printf("%s", buffer);
         fclose(file);
     }
     return 0;
