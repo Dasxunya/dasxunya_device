@@ -58,7 +58,6 @@ int main(int argc, char **argv) {
         fread(&buffer, 1, sizeof(buffer), file);
         printf("Получаю информацию об айди вендора и девайса...\n");
         printf("%s", buffer);
-        fclose(file);
     } else { //if argc == 2
         printf("Получение структуры vm_area...\n");
         rez = getopt_long(argc, argv, shortOptions, longOptions, &opIdx);
@@ -80,7 +79,7 @@ int main(int argc, char **argv) {
         fread(&buffer, 1, sizeof(buffer), file);
         printf("Получаю информацию о пиде...\n");
         printf("%s", buffer);
-        fclose(file);
     }
+    fclose(file);
     return 0;
 }
